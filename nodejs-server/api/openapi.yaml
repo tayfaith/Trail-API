@@ -1,0 +1,1999 @@
+openapi: 3.0.0
+info:
+  title: Trail API
+  description: Trail is a web application that aims to help SMEs better cope with
+    the COVID-19 restrictions.
+  contact:
+    email: cs203trail@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0-oas3
+servers:
+- url: http://localhost:8080/api/v1
+- url: https://alb.trailsg.biz/api
+tags:
+- name: client
+  description: Operations related to client
+- name: employee
+  description: Operations related to an employee
+- name: guideline
+  description: Operations related to a guideline. Admin-only.
+- name: riskAnalysis
+  description: Operations related to risk analysis
+- name: industry
+  description: Operations related to an industry. Admin-only.
+- name: registeredbusiness
+  description: Operations related to a business
+- name: grant
+  description: Operations related to a grant. Admin-only.
+- name: notification
+  description: Operations related to a notification
+paths:
+  /client:
+    post:
+      tags:
+      - client
+      summary: adds a new client
+      description: Adds a client to the system
+      operationId: addClient
+      requestBody:
+        description: Client to add
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientRequest'
+      responses:
+        "201":
+          description: client created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientResponse'
+        "400":
+          description: bad request
+      x-swagger-router-controller: Client
+  /client/email/{email}:
+    get:
+      tags:
+      - client
+      summary: retrieve client based on client email
+      description: Retrieve client based on client email
+      operationId: getClientByEmail
+      parameters:
+      - name: email
+        in: path
+        description: email of the client
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: client retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientResponse'
+        "400":
+          description: bad request. client with given email not found.
+      x-swagger-router-controller: Client
+  /client/{clientId}:
+    get:
+      tags:
+      - client
+      summary: retrieve client based on clientId
+      description: Retrieve client based on clientId
+      operationId: getClientById
+      parameters:
+      - name: clientId
+        in: path
+        description: ID of the client you wish retrieve
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: client retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientResponse'
+        "400":
+          description: bad request. client with given clientId not found.
+      x-swagger-router-controller: Client
+    put:
+      tags:
+      - client
+      summary: update details of client
+      description: Update details of a client
+      operationId: updateClient
+      parameters:
+      - name: clientId
+        in: path
+        description: ID of the client you wish to update
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        description: Client to update
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientRequest'
+      responses:
+        "200":
+          description: client updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientResponse'
+        "400":
+          description: bad request
+      x-swagger-router-controller: Client
+    delete:
+      tags:
+      - client
+      summary: delete client
+      description: Delete client from system
+      operationId: deleteClient
+      parameters:
+      - name: clientId
+        in: path
+        description: ID of the client
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: client deleted
+        "400":
+          description: bad request. client with given clientId not found.
+      x-swagger-router-controller: Client
+  /clients:
+    get:
+      tags:
+      - client
+      summary: retrieve all clients in the system
+      description: Retrieve all clients in the system
+      operationId: getAllClients
+      responses:
+        "200":
+          description: client retrieved
+      x-swagger-router-controller: Client
+  /role:
+    post:
+      tags:
+      - client
+      summary: adds a role
+      description: Adds a role to the system
+      operationId: addRole
+      requestBody:
+        description: Role to add
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Role'
+      responses:
+        "201":
+          description: role created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+        "400":
+          description: bad request
+        "403":
+          description: forbidden
+      x-swagger-router-controller: Client
+  /role/{roleName}/{email}:
+    put:
+      tags:
+      - client
+      summary: add role to existing client
+      description: Adds role to an existing client
+      operationId: addRoleToClient
+      parameters:
+      - name: roleName
+        in: path
+        description: role that you want to add to the client
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: email
+        in: path
+        description: email of the client you want to add the role to
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: role added to client
+        "400":
+          description: bad request
+      x-swagger-router-controller: Client
+  /employeeRecord:
+    put:
+      tags:
+      - employee
+      summary: update details of employee
+      description: Updates details of employee
+      operationId: updateEmployee
+      requestBody:
+        description: Employee to update
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeResponse'
+      responses:
+        "200":
+          description: employee updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeResponse'
+        "400":
+          description: bad request
+      x-swagger-router-controller: Employee
+    post:
+      tags:
+      - employee
+      summary: adds an employee
+      description: Adds an employee to the system
+      operationId: addEmployeeRecord
+      requestBody:
+        description: Employee to add
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeRequest'
+      responses:
+        "201":
+          description: employee created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeResponse'
+        "400":
+          description: bad request
+      x-swagger-router-controller: Employee
+  /employeeRecord/{businessId}:
+    get:
+      tags:
+      - employee
+      summary: retrieve employees based on businessId
+      description: Retrieves employee based on employeeId
+      operationId: getEmployeesByBusiness
+      parameters:
+      - name: businessId
+        in: path
+        description: ID of the business you wish retrieve employees from
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: employees retrieved
+        "400":
+          description: bad request
+      x-swagger-router-controller: Employee
+  /employeeRecord/{employeeId}:
+    get:
+      tags:
+      - employee
+      summary: retrieve employee based on employeeId
+      description: Retrieves employee based on employeeId
+      operationId: getEmployeeById
+      parameters:
+      - name: employeeId
+        in: path
+        description: ID of the employee you wish retrieve
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: employee retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeResponse'
+        "400":
+          description: bad request
+      x-swagger-router-controller: Employee
+    delete:
+      tags:
+      - employee
+      summary: delete employee
+      description: Delete employee from system
+      operationId: deleteEmployee
+      parameters:
+      - name: employeeId
+        in: path
+        description: ID of the employee
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: employee deleted
+        "400":
+          description: bad request
+      x-swagger-router-controller: Employee
+  /guideline/{adminId}:
+    put:
+      tags:
+      - guideline
+      summary: update details of existing guideline
+      description: Update details of existing guideline
+      operationId: updateGuideline
+      parameters:
+      - name: adminId
+        in: path
+        description: ID of the admin for authorization purposes
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        description: Guideline to update
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GuidelineRequest'
+      responses:
+        "200":
+          description: guideline updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GuidelineResponse'
+        "400":
+          description: bad request
+      x-swagger-router-controller: Guideline
+    post:
+      tags:
+      - guideline
+      summary: adds a new guideline
+      description: Adds a guideline to the system
+      operationId: addGuideline
+      parameters:
+      - name: adminId
+        in: path
+        description: ID of the admin for authorization purposes
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        description: Guideline to add
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GuidelineRequest'
+      responses:
+        "201":
+          description: guideline created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GuidelineResponse'
+        "400":
+          description: bad request
+        "403":
+          description: unauthorized
+      x-swagger-router-controller: Guideline
+  /guideline/{guidelineId}:
+    get:
+      tags:
+      - guideline
+      summary: retrieve guideline based on guidelineId
+      description: Retrieves guideline based on guidelineId
+      operationId: getGuideline
+      parameters:
+      - name: guidelineId
+        in: path
+        description: ID of the guideline you wish retrieve
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: guideline retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GuidelineResponse'
+        "400":
+          description: bad request
+      x-swagger-router-controller: Guideline
+  /guideline/industry/{industryId}:
+    get:
+      tags:
+      - guideline
+      summary: retrieve latest guideline based on industryId
+      description: Retrieves latest guideline based on industryId
+      operationId: getLatestGuidelineByIndustry
+      parameters:
+      - name: industryId
+        in: path
+        description: ID of the industry you wish retrieve its guideline from
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: guideline retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GuidelineResponse'
+        "400":
+          description: bad request
+      x-swagger-router-controller: Guideline
+  /guidelines:
+    get:
+      tags:
+      - guideline
+      summary: retrieve all guidelines in the system
+      description: Retrieves all guidelines
+      operationId: getAllGuidelines
+      responses:
+        "200":
+          description: guidelines retrieved
+        "400":
+          description: bad request
+      x-swagger-router-controller: Guideline
+  /guideline/{adminId}/{guidelineId}:
+    delete:
+      tags:
+      - guideline
+      summary: delete guideline
+      description: Delete guideline from system
+      operationId: deleteGuideline
+      parameters:
+      - name: adminId
+        in: path
+        description: ID of the admin for authorization purposes
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: guidelineId
+        in: path
+        description: ID of the guideline you wish to delete
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: guideline deleted
+        "400":
+          description: "invalid input, object invalid"
+      x-swagger-router-controller: Guideline
+  /risk-analysis-summary/{businessId}:
+    get:
+      tags:
+      - riskAnalysis
+      summary: retrieve risk score given businessId
+      description: Retrieve risk score of business based on businessId
+      operationId: getRiskScore
+      parameters:
+      - name: businessId
+        in: path
+        description: ID of the business you wish retrieve risk score from
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: risk score retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+        "400":
+          description: bad request
+      x-swagger-router-controller: RiskAnalysis
+  /industry/{adminId}:
+    put:
+      tags:
+      - industry
+      summary: update details of existing industry
+      description: Update details of an existing industry
+      operationId: updateIndustry
+      parameters:
+      - name: adminId
+        in: path
+        description: ID of the admin for authorization purposes
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        description: Industry to be updated
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IndustryRequestWithId'
+      responses:
+        "200":
+          description: industry updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IndustryResponse'
+        "400":
+          description: bad request
+      x-swagger-router-controller: Industry
+    post:
+      tags:
+      - industry
+      summary: adds a new industry
+      description: Adds an industry to the system
+      operationId: addIndustry
+      parameters:
+      - name: adminId
+        in: path
+        description: ID of the admin for authorization purposes
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        description: Industry to be added
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IndustryRequest'
+      responses:
+        "201":
+          description: industry created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IndustryResponse'
+        "400":
+          description: bad request
+        "403":
+          description: unauthorized
+      x-swagger-router-controller: Industry
+  /industry/{adminId}/{industryId}:
+    delete:
+      tags:
+      - industry
+      summary: delete industry
+      description: Delete an industry from the system
+      operationId: deleteIndustry
+      parameters:
+      - name: adminId
+        in: path
+        description: ID of the admin for authorization purposes
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: industryId
+        in: path
+        description: ID of the industry to be deleted
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: industry deleted
+        "400":
+          description: "invalid input, object invalid"
+      x-swagger-router-controller: Industry
+  /industry/{industryId}:
+    get:
+      tags:
+      - industry
+      summary: retrieve industry based on industryId
+      description: Retrieves an industry based on industryId
+      operationId: getIndustry
+      parameters:
+      - name: industryId
+        in: path
+        description: ID of the industry to be retrieved
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: industry retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IndustryResponse'
+        "400":
+          description: bad request
+      x-swagger-router-controller: Industry
+  /industrySubtypes:
+    get:
+      tags:
+      - industry
+      summary: "retrieve all industries in the system, or industries with industry\
+        \ name if provided"
+      description: "Retrieve all industries in the system, or industries with industry\
+        \ name if provided"
+      operationId: getIndustrySubtypes
+      parameters:
+      - name: Industry Name
+        in: query
+        description: Retrieve all industry subtypes with given industry name if provided
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: industries retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IndustryResponse'
+                x-content-type: application/json
+        "400":
+          description: "invalid input, object invalid"
+      x-swagger-router-controller: Industry
+  /industryNames:
+    get:
+      tags:
+      - industry
+      summary: retrieve all industry names
+      description: Retrieve all industry names
+      operationId: getAllIndustryNames
+      responses:
+        "200":
+          description: industry names retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                x-content-type: application/json
+        "400":
+          description: "invalid input, object invalid"
+      x-swagger-router-controller: Industry
+  /registered-business:
+    post:
+      tags:
+      - registeredbusiness
+      summary: adds a new registered business
+      description: Adds a registered business to the system
+      operationId: addRegisteredBusiness
+      requestBody:
+        description: Registered Business to add
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisteredBusinessRequest'
+      responses:
+        "201":
+          description: registered business created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisteredBusinessResponse'
+        "400":
+          description: bad request
+        "403":
+          description: unauthorized
+      x-swagger-router-controller: Registeredbusiness
+  /registered-business/{businessId}:
+    get:
+      tags:
+      - registeredbusiness
+      summary: retrieve registered business based on businessId
+      description: Retrieves registered business based on businessId
+      operationId: getRegisteredBusiness
+      parameters:
+      - name: businessId
+        in: path
+        description: ID of the business to be retrieved
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: business retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisteredBusinessResponse'
+        "400":
+          description: bad request
+      x-swagger-router-controller: Registeredbusiness
+    put:
+      tags:
+      - registeredbusiness
+      summary: update details of existing business
+      description: Update details of an existing registered business
+      operationId: updateRegisteredBusiness
+      parameters:
+      - name: businessId
+        in: path
+        description: ID of the registered business to be updated
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        description: Registered Business to update
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisteredBusinessRequest'
+      responses:
+        "200":
+          description: business updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisteredBusinessResponse'
+        "400":
+          description: bad request
+      x-swagger-router-controller: Registeredbusiness
+    delete:
+      tags:
+      - registeredbusiness
+      summary: delete business
+      description: Delete a registered business from the system
+      operationId: deleteRegisteredBusiness
+      parameters:
+      - name: businessId
+        in: path
+        description: ID of the registered business to be deleted
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: business deleted
+        "400":
+          description: "invalid input, object invalid"
+      x-swagger-router-controller: Registeredbusiness
+  /registered-businesses:
+    get:
+      tags:
+      - registeredbusiness
+      summary: retrieve all businesses in the system
+      description: Retrieves all registered businesses
+      operationId: getAllRegisteredBusinesses
+      responses:
+        "200":
+          description: businesses retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RegisteredBusinessResponse'
+                x-content-type: application/json
+        "400":
+          description: bad request
+      x-swagger-router-controller: Registeredbusiness
+  /grant/{adminId}:
+    put:
+      tags:
+      - grant
+      summary: update details of existing grant
+      description: Update details of an existing grant
+      operationId: updateGrant
+      parameters:
+      - name: adminId
+        in: path
+        description: ID of the admin for authorization purposes
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        description: Grant to be updated
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GrantRequestWithId'
+      responses:
+        "200":
+          description: grant updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GrantResponse'
+        "400":
+          description: bad request
+      x-swagger-router-controller: Grant
+    post:
+      tags:
+      - grant
+      summary: adds a new grant
+      description: Adds a grant to the system
+      operationId: addGrant
+      parameters:
+      - name: adminId
+        in: path
+        description: ID of the admin for authorization purposes
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        description: Grant to be added
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GrantRequest'
+      responses:
+        "201":
+          description: grant created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GrantResponse'
+        "400":
+          description: bad request
+        "403":
+          description: unauthorized
+      x-swagger-router-controller: Grant
+  /grant-industry:
+    post:
+      tags:
+      - grant
+      summary: add industry to grant
+      description: Adds an industry to a grant
+      operationId: addIndustryToGrant
+      requestBody:
+        description: "ID of the admin for authorization purposes, name of industry\
+          \ to be added to grant, and grant for which industry is to be added"
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddIndustryToGrantRequest'
+      responses:
+        "200":
+          description: industry added to grant
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GrantResponse'
+        "400":
+          description: bad request
+      x-swagger-router-controller: Grant
+  /grant/{adminId}/{grantId}:
+    delete:
+      tags:
+      - grant
+      summary: delete grant
+      description: Delete a grant from the system
+      operationId: deleteGrant
+      parameters:
+      - name: adminId
+        in: path
+        description: ID of the admin for authorization purposes
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: grantId
+        in: path
+        description: ID of the grant to be deleted
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: grant deleted
+        "400":
+          description: "invalid input, object invalid"
+      x-swagger-router-controller: Grant
+  /grant/{grantId}:
+    get:
+      tags:
+      - grant
+      summary: retrieve grant based on grantId
+      description: Retrieves grant based on grantId
+      operationId: getGrant
+      parameters:
+      - name: grantId
+        in: path
+        description: ID of the grant to be retrieved
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: grant retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GrantResponse'
+        "400":
+          description: bad request
+      x-swagger-router-controller: Grant
+  /grants:
+    get:
+      tags:
+      - grant
+      summary: retrieve all grants in the system
+      description: Retrieves all grants
+      operationId: getAllGrants
+      responses:
+        "200":
+          description: grants retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GrantResponse'
+                x-content-type: application/json
+        "400":
+          description: bad request
+      x-swagger-router-controller: Grant
+  /grants/industry/{industrySubtype}:
+    get:
+      tags:
+      - grant
+      summary: retrieve all grants by industry subtype
+      description: Retrieve all industries in the system by industry subtype
+      operationId: getAllGrantsByIndustry
+      parameters:
+      - name: industrySubtype
+        in: path
+        description: Industry Subtype that you want to search grants for
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: grants retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GrantResponse'
+                x-content-type: application/json
+        "400":
+          description: "invalid input, object invalid"
+      x-swagger-router-controller: Grant
+  /notification/{adminId}:
+    post:
+      tags:
+      - notification
+      summary: adds a new notification
+      description: Adds a notification to the system
+      operationId: addNotification
+      parameters:
+      - name: adminId
+        in: path
+        description: ID of the admin for authorization purposes
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        description: Notification to be added
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationRequest'
+      responses:
+        "201":
+          description: notification created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationResponseU'
+        "400":
+          description: bad request
+        "403":
+          description: unauthorized
+      x-swagger-router-controller: Notification
+  /ack-notification/{notifId}:
+    put:
+      tags:
+      - notification
+      summary: sets acknowledged to true for a notification
+      description: Updates acknowledged status to true for an existing grant
+      operationId: acknowledgeNotification
+      parameters:
+      - name: notifId
+        in: path
+        description: ID of the notification to be acknowledged
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: notification acknowleged
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationResponseA'
+        "400":
+          description: bad request
+      x-swagger-router-controller: Notification
+  /notification/{clientId}/{notifId}:
+    delete:
+      tags:
+      - notification
+      summary: delete notification
+      description: Delete a notification from the system
+      operationId: deleteNotification
+      parameters:
+      - name: clientId
+        in: path
+        description: ID of the client deleting the notification
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: notifId
+        in: path
+        description: ID of the notification to be deleted
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: notification deleted
+        "400":
+          description: "invalid input, object invalid"
+      x-swagger-router-controller: Notification
+  /notification/{notifId}:
+    get:
+      tags:
+      - notification
+      summary: retrieve notification based on notifId
+      description: Retrieves notification based on notifId
+      operationId: getNotification
+      parameters:
+      - name: notifId
+        in: path
+        description: ID of the notification to be retrieved
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: notification retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationResponseA'
+        "400":
+          description: bad request
+      x-swagger-router-controller: Notification
+  /notifications/{clientId}:
+    get:
+      tags:
+      - notification
+      summary: retrieve all notifications of a client by clientId
+      description: Retrieve all notifications of a client in the system by clientId
+      operationId: getAllNotification
+      parameters:
+      - name: clientId
+        in: path
+        description: ID of the client that you want to retrieve notifications for
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: notifications retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NotificationResponseA'
+                x-content-type: application/json
+        "400":
+          description: "invalid input, object invalid"
+      x-swagger-router-controller: Notification
+  /unack-notification/{clientId}:
+    get:
+      tags:
+      - notification
+      summary: retrieve all unacknowledged notifications of a client by clientId
+      description: Retrieve all unacknowledged notifications of a client in the system
+        by clientId
+      operationId: getAllUnacknowledgedNotification
+      parameters:
+      - name: clientId
+        in: path
+        description: ID of the client that you want to retrieve notifications for
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: unacknowledged notifications retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NotificationResponseU'
+                x-content-type: application/json
+        "400":
+          description: "invalid input, object invalid"
+      x-swagger-router-controller: Notification
+components:
+  schemas:
+    ClientRequest:
+      required:
+      - email
+      - password
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          example: faith@gmail.com
+        password:
+          type: string
+          format: password
+          example: "123456"
+    ClientResponse:
+      required:
+      - clientId
+      - createdAt
+      - email
+      - registeredBusiness
+      - roles
+      type: object
+      properties:
+        clientId:
+          type: string
+          format: uuid
+          example: 80775c09-673c-4a30-875b-27c4102b5ae5
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClientResponse_roles'
+        email:
+          type: string
+          format: email
+          example: faith@gmail.com
+        createdAt:
+          type: string
+          format: date-time
+          example: 2021-11-15T15:16:05.259Z
+        registeredBusinesses:
+          $ref: '#/components/schemas/ClientResponse_registeredBusinesses'
+      example:
+        createdAt: 2021-11-15T15:16:05.259Z
+        clientId: 80775c09-673c-4a30-875b-27c4102b5ae5
+        registeredBusinesses:
+          industryId: 31f7b236-71a6-4a1f-b7da-eb94338418b6
+          clientId: a66c2f2e-a359-488d-ab3b-c1242e74ae21
+          businessId: 98800244-d07e-41bd-a5f4-b30699db51c5
+          businessName: Yeow Leong Chicken Rice
+          businessDesc: welcome! let's Chicken rice!
+        roles:
+        - roleName: ADMIN
+          id: 2
+        - roleName: ADMIN
+          id: 2
+        email: faith@gmail.com
+    Role:
+      required:
+      - roleId
+      - roleName
+      properties:
+        roleName:
+          type: string
+          example: ADMIN
+        roleId:
+          type: integer
+          example: 1
+      example:
+        roleId: 1
+        roleName: ADMIN
+    EmployeeRequest:
+      required:
+      - businessId
+      - dateOfBirth
+      - lastSwabDate
+      - name
+      - swabResult
+      - vaccine
+      properties:
+        name:
+          type: string
+          example: John Smith
+        dateOfBirth:
+          type: string
+          format: date
+          example: 2001-08-29
+        vaccine:
+          type: string
+          example: Pfizer
+        lastSwabDate:
+          type: string
+          format: date
+          example: 2021-10-10
+        swabResult:
+          type: string
+          example: Negative
+        businessId:
+          type: string
+          format: uuid
+          example: eb3a1261-4a54-4e8c-8cec-36a70581a119
+    EmployeeResponse:
+      required:
+      - businessId
+      - dateOfBirth
+      - employeeId
+      - lastSwabDate
+      - name
+      - swabResult
+      - vaccine
+      properties:
+        employeeId:
+          type: string
+          format: uuid
+          example: faae0de8-cd51-4254-a428-586aa47c8636
+        name:
+          type: string
+          example: John Smith
+        dateOfBirth:
+          type: string
+          format: date
+          example: 2001-08-29
+        vaccine:
+          type: string
+          example: Pfizer
+        lastSwabDate:
+          type: string
+          format: date
+          example: 2021-10-10
+        swabResult:
+          type: string
+          example: Negative
+        businessId:
+          type: string
+          format: uuid
+          example: eb3a1261-4a54-4e8c-8cec-36a70581a119
+      example:
+        vaccine: Pfizer
+        lastSwabDate: 2021-10-10T00:00:00.000+00:00
+        swabResult: Negative
+        name: John Smith
+        businessId: eb3a1261-4a54-4e8c-8cec-36a70581a119
+        employeeId: faae0de8-cd51-4254-a428-586aa47c8636
+        dateOfBirth: 2001-08-29T00:00:00.000+00:00
+    GuidelineRequest:
+      required:
+      - canOpOnSite
+      - canOpOnSiteDetails
+      - contactTracing
+      - contactTracingDetails
+      - covidTestingDetails
+      - covidTestingUnvaccinated
+      - covidTestingVaccinated
+      - groupSize
+      - groupSizeDetails
+      - industryId
+      - opCapacity
+      - opCapacityDetails
+      - opGuidelines
+      - referenceLink
+      properties:
+        canOpOnSite:
+          type: boolean
+          example: true
+        canOpOnSiteDetails:
+          type: string
+          example: "F&B establishments are allowed to continue food service operations,\
+            \ with the exception of establishments with Pubs, Bars, Nightclubs, Discos\
+            \ and Karaoke SFA license categories or SSIC codes starting with 5613."
+        groupSize:
+          type: integer
+          example: 2
+        groupSizeDetails:
+          type: string
+          example: "As hawker centres and coffeeshops are open-air and naturally ventilated\
+            \ spaces, a special concession would be given to allow vaccinated and\
+            \ unvaccinated individuals to dine in these settings, but subject to group\
+            \ sizes of up to 2 persons only."
+        covidTestingVaccinated:
+          type: integer
+          example: 7
+        covidTestingUnvaccinated:
+          type: integer
+          example: 14
+        covidTestingDetails:
+          type: string
+          example: "From 15 July 2021, all individuals working at F&B establishments\
+            \ providing dine-in services must undergo testing once every 14 days using\
+            \ tests"
+        contactTracing:
+          type: string
+          example: SafeEntry
+        contactTracingDetails:
+          type: string
+          example: "F&B establishments must implement SafeEntry via TraceTogether-only\
+            \ SafeEntry (TT-only SE) for customers and visitors, with the exception\
+            \ of those that only provide takeaway and/or delivery, with no dine-in\
+            \ services"
+        opCapacity:
+          type: integer
+          example: 75
+        opCapacityDetails:
+          type: string
+          example: Only allowed 75% capacity at each time slot
+        opGuidelines:
+          type: string
+          example: "Clearly demarcate queue lines, put up signage to guide customers\
+            \ on where to queue to order and collect food, and ensure at least one-metre\
+            \ spacing between individual customers at areas such as entrances and\
+            \ cashier counters."
+        referenceLink:
+          type: string
+          format: link
+          example: https://www.stb.gov.sg/content/stb/en/home-pages/advisory-for-food-and-beverage-establishments.html#_ftn2
+        industryId:
+          type: string
+          format: uuid
+          example: 9ec9e4d1-9e64-4be8-a04a-5cd87e87ebb4
+    GuidelineResponse:
+      required:
+      - canOpOnSite
+      - canOpOnSiteDetails
+      - contactTracing
+      - contactTracingDetails
+      - covidTestingDetails
+      - covidTestingUnvaccinated
+      - covidTestingVaccinated
+      - groupSize
+      - groupSizeDetails
+      - industryId
+      - opCapacity
+      - opCapacityDetails
+      - opGuidelines
+      - referenceLink
+      properties:
+        canOpOnSite:
+          type: boolean
+          example: true
+        canOpOnSiteDetails:
+          type: string
+          example: "F&B establishments are allowed to continue food service operations,\
+            \ with the exception of establishments with Pubs, Bars, Nightclubs, Discos\
+            \ and Karaoke SFA license categories or SSIC codes starting with 5613."
+        groupSize:
+          type: integer
+          example: 2
+        groupSizeDetails:
+          type: string
+          example: "As hawker centres and coffeeshops are open-air and naturally ventilated\
+            \ spaces, a special concession would be given to allow vaccinated and\
+            \ unvaccinated individuals to dine in these settings, but subject to group\
+            \ sizes of up to 2 persons only."
+        covidTestingVaccinated:
+          type: integer
+          example: 7
+        covidTestingUnvaccinated:
+          type: integer
+          example: 14
+        covidTestingDetails:
+          type: string
+          example: "From 15 July 2021, all individuals working at F&B establishments\
+            \ providing dine-in services must undergo testing once every 14 days using\
+            \ tests"
+        contactTracing:
+          type: string
+          example: SafeEntry
+        contactTracingDetails:
+          type: string
+          example: "F&B establishments must implement SafeEntry via TraceTogether-only\
+            \ SafeEntry (TT-only SE) for customers and visitors, with the exception\
+            \ of those that only provide takeaway and/or delivery, with no dine-in\
+            \ services"
+        opCapacity:
+          type: integer
+          example: 75
+        opCapacityDetails:
+          type: string
+          example: Only allowed 75% capacity at each time slot
+        opGuidelines:
+          type: string
+          example: "Clearly demarcate queue lines, put up signage to guide customers\
+            \ on where to queue to order and collect food, and ensure at least one-metre\
+            \ spacing between individual customers at areas such as entrances and\
+            \ cashier counters."
+        referenceLink:
+          type: string
+          format: link
+          example: https://www.stb.gov.sg/content/stb/en/home-pages/advisory-for-food-and-beverage-establishments.html#_ftn2
+        industryId:
+          type: string
+          format: uuid
+          example: 9ec9e4d1-9e64-4be8-a04a-5cd87e87ebb4
+      example:
+        opCapacity: 75
+        opCapacityDetails: Only allowed 75% capacity at each time slot
+        covidTestingUnvaccinated: 14
+        covidTestingDetails: "From 15 July 2021, all individuals working at F&B establishments\
+          \ providing dine-in services must undergo testing once every 14 days using\
+          \ tests"
+        opGuidelines: "Clearly demarcate queue lines, put up signage to guide customers\
+          \ on where to queue to order and collect food, and ensure at least one-metre\
+          \ spacing between individual customers at areas such as entrances and cashier\
+          \ counters."
+        contactTracingDetails: "F&B establishments must implement SafeEntry via TraceTogether-only\
+          \ SafeEntry (TT-only SE) for customers and visitors, with the exception\
+          \ of those that only provide takeaway and/or delivery, with no dine-in services"
+        canOpOnSiteDetails: "F&B establishments are allowed to continue food service\
+          \ operations, with the exception of establishments with Pubs, Bars, Nightclubs,\
+          \ Discos and Karaoke SFA license categories or SSIC codes starting with\
+          \ 5613."
+        referenceLink: https://www.stb.gov.sg/content/stb/en/home-pages/advisory-for-food-and-beverage-establishments.html#_ftn2
+        canOpOnSite: true
+        industryId: 9ec9e4d1-9e64-4be8-a04a-5cd87e87ebb4
+        contactTracing: SafeEntry
+        groupSizeDetails: "As hawker centres and coffeeshops are open-air and naturally\
+          \ ventilated spaces, a special concession would be given to allow vaccinated\
+          \ and unvaccinated individuals to dine in these settings, but subject to\
+          \ group sizes of up to 2 persons only."
+        groupSize: 2
+        covidTestingVaccinated: 7
+    IndustryRequest:
+      required:
+      - industryDesc
+      - industryName
+      - industrySubtype
+      properties:
+        industryName:
+          type: string
+          example: F&B
+        industrySubtype:
+          type: string
+          example: Hawker
+        industryDesc:
+          type: string
+          example: SFA coffee shop / eating house / canteen license
+    IndustryRequestWithId:
+      required:
+      - industryDesc
+      - industryId
+      - industryName
+      - industrySubtype
+      properties:
+        industryId:
+          type: string
+          format: uuid
+          example: 9ec9e4d1-9e64-4be8-a04a-5cd87e87ebb4
+        industryName:
+          type: string
+          example: F&B
+        industrySubtype:
+          type: string
+          example: Hawker
+        industryDesc:
+          type: string
+          example: SFA coffee shop / eating house / canteen license
+    IndustryResponse:
+      required:
+      - guidelines
+      - industryDesc
+      - industryId
+      - industryName
+      - industrySubtype
+      - registeredBusinesses
+      properties:
+        industryId:
+          type: string
+          example: 9ec9e4d1-9e64-4be8-a04a-5cd87e87ebb4
+        industryName:
+          type: string
+          example: F&B
+        industrySubtype:
+          type: string
+          example: Hawker
+        industryDesc:
+          type: string
+          example: SFA coffee shop / eating house / canteen license
+        guidelines:
+          type: array
+          items:
+            $ref: '#/components/schemas/GuidelineResponse'
+        registeredBusinesses:
+          type: array
+          items:
+            $ref: '#/components/schemas/RegisteredBusinessResponse'
+      example:
+        industryName: F&B
+        industrySubtype: Hawker
+        industryId: 9ec9e4d1-9e64-4be8-a04a-5cd87e87ebb4
+        registeredBusinesses:
+        - industryId: 31f7b236-71a6-4a1f-b7da-eb94338418b6
+          clientId: a66c2f2e-a359-488d-ab3b-c1242e74ae21
+          businessId: 98800244-d07e-41bd-a5f4-b30699db51c5
+          businessName: Yeow Leong Chicken Rice
+          businessDesc: welcome! let's Chicken rice!
+        - industryId: 31f7b236-71a6-4a1f-b7da-eb94338418b6
+          clientId: a66c2f2e-a359-488d-ab3b-c1242e74ae21
+          businessId: 98800244-d07e-41bd-a5f4-b30699db51c5
+          businessName: Yeow Leong Chicken Rice
+          businessDesc: welcome! let's Chicken rice!
+        guidelines:
+        - opCapacity: 75
+          opCapacityDetails: Only allowed 75% capacity at each time slot
+          covidTestingUnvaccinated: 14
+          covidTestingDetails: "From 15 July 2021, all individuals working at F&B\
+            \ establishments providing dine-in services must undergo testing once\
+            \ every 14 days using tests"
+          opGuidelines: "Clearly demarcate queue lines, put up signage to guide customers\
+            \ on where to queue to order and collect food, and ensure at least one-metre\
+            \ spacing between individual customers at areas such as entrances and\
+            \ cashier counters."
+          contactTracingDetails: "F&B establishments must implement SafeEntry via\
+            \ TraceTogether-only SafeEntry (TT-only SE) for customers and visitors,\
+            \ with the exception of those that only provide takeaway and/or delivery,\
+            \ with no dine-in services"
+          canOpOnSiteDetails: "F&B establishments are allowed to continue food service\
+            \ operations, with the exception of establishments with Pubs, Bars, Nightclubs,\
+            \ Discos and Karaoke SFA license categories or SSIC codes starting with\
+            \ 5613."
+          referenceLink: https://www.stb.gov.sg/content/stb/en/home-pages/advisory-for-food-and-beverage-establishments.html#_ftn2
+          canOpOnSite: true
+          industryId: 9ec9e4d1-9e64-4be8-a04a-5cd87e87ebb4
+          contactTracing: SafeEntry
+          groupSizeDetails: "As hawker centres and coffeeshops are open-air and naturally\
+            \ ventilated spaces, a special concession would be given to allow vaccinated\
+            \ and unvaccinated individuals to dine in these settings, but subject\
+            \ to group sizes of up to 2 persons only."
+          groupSize: 2
+          covidTestingVaccinated: 7
+        - opCapacity: 75
+          opCapacityDetails: Only allowed 75% capacity at each time slot
+          covidTestingUnvaccinated: 14
+          covidTestingDetails: "From 15 July 2021, all individuals working at F&B\
+            \ establishments providing dine-in services must undergo testing once\
+            \ every 14 days using tests"
+          opGuidelines: "Clearly demarcate queue lines, put up signage to guide customers\
+            \ on where to queue to order and collect food, and ensure at least one-metre\
+            \ spacing between individual customers at areas such as entrances and\
+            \ cashier counters."
+          contactTracingDetails: "F&B establishments must implement SafeEntry via\
+            \ TraceTogether-only SafeEntry (TT-only SE) for customers and visitors,\
+            \ with the exception of those that only provide takeaway and/or delivery,\
+            \ with no dine-in services"
+          canOpOnSiteDetails: "F&B establishments are allowed to continue food service\
+            \ operations, with the exception of establishments with Pubs, Bars, Nightclubs,\
+            \ Discos and Karaoke SFA license categories or SSIC codes starting with\
+            \ 5613."
+          referenceLink: https://www.stb.gov.sg/content/stb/en/home-pages/advisory-for-food-and-beverage-establishments.html#_ftn2
+          canOpOnSite: true
+          industryId: 9ec9e4d1-9e64-4be8-a04a-5cd87e87ebb4
+          contactTracing: SafeEntry
+          groupSizeDetails: "As hawker centres and coffeeshops are open-air and naturally\
+            \ ventilated spaces, a special concession would be given to allow vaccinated\
+            \ and unvaccinated individuals to dine in these settings, but subject\
+            \ to group sizes of up to 2 persons only."
+          groupSize: 2
+          covidTestingVaccinated: 7
+        industryDesc: SFA coffee shop / eating house / canteen license
+    RegisteredBusinessRequest:
+      required:
+      - businessDesc
+      - businessName
+      - clientId
+      - industryId
+      properties:
+        businessName:
+          type: string
+          example: Yeow Leong Chicken Rice
+        businessDesc:
+          type: string
+          example: welcome! let's Chicken rice!
+        industryId:
+          type: string
+          format: uuid
+          example: 31f7b236-71a6-4a1f-b7da-eb94338418b6
+        clientId:
+          type: string
+          format: uuid
+          example: a66c2f2e-a359-488d-ab3b-c1242e74ae21
+    RegisteredBusinessResponse:
+      required:
+      - businessDesc
+      - businessId
+      - businessName
+      - clientId
+      - industryId
+      properties:
+        businessId:
+          type: string
+          format: uuid
+          example: 98800244-d07e-41bd-a5f4-b30699db51c5
+        businessName:
+          type: string
+          example: Yeow Leong Chicken Rice
+        businessDesc:
+          type: string
+          example: welcome! let's Chicken rice!
+        industryId:
+          type: string
+          format: uuid
+          example: 31f7b236-71a6-4a1f-b7da-eb94338418b6
+        clientId:
+          type: string
+          format: uuid
+          example: a66c2f2e-a359-488d-ab3b-c1242e74ae21
+      example:
+        industryId: 31f7b236-71a6-4a1f-b7da-eb94338418b6
+        clientId: a66c2f2e-a359-488d-ab3b-c1242e74ae21
+        businessId: 98800244-d07e-41bd-a5f4-b30699db51c5
+        businessName: Yeow Leong Chicken Rice
+        businessDesc: welcome! let's Chicken rice!
+    GrantRequest:
+      required:
+      - applicationProcess
+      - benefits
+      - eligibilityCriteria
+      - grantDesc
+      - grantLink
+      - grantName
+      - provider
+      - value
+      properties:
+        grantName:
+          type: string
+          example: Productivity Solutions Grant
+        provider:
+          type: string
+          example: gobusinesssg
+        grantDesc:
+          type: string
+          example: Grant to aid businesses in implementing productive technology
+        value:
+          type: integer
+          example: 30000
+        eligibilityCriteria:
+          type: string
+          example: Singapore run business
+        applicationProcess:
+          type: string
+          example: Buy from approved vendors and apply for grant with receipt
+        benefits:
+          type: string
+          example: Up to 80% of costs reimbursed
+        grantLink:
+          type: string
+          example: https://www.gobusiness.gov.sg/productivity-solutions-grant/
+    GrantRequestWithId:
+      required:
+      - applicationProcess
+      - benefits
+      - eligibilityCriteria
+      - grantDesc
+      - grantId
+      - grantLink
+      - grantName
+      - provider
+      - value
+      properties:
+        grantId:
+          type: string
+          format: uuid
+          example: 9900b0bc-11e0-499d-8667-c40865bdd0df
+        grantName:
+          type: string
+          example: Productivity Solutions Grant
+        provider:
+          type: string
+          example: gobusinesssg
+        grantDesc:
+          type: string
+          example: Grant to aid businesses in implementing productive technology
+        value:
+          type: integer
+          example: 30000
+        eligibilityCriteria:
+          type: string
+          example: Singapore run business
+        applicationProcess:
+          type: string
+          example: Buy from approved vendors and apply for grant with receipt
+        benefits:
+          type: string
+          example: Up to 80% of costs reimbursed
+        grantLink:
+          type: string
+          example: https://www.gobusiness.gov.sg/productivity-solutions-grant/
+    AddIndustryToGrantRequest:
+      required:
+      - adminId
+      - grantId
+      - industryName
+      properties:
+        adminId:
+          type: string
+          format: uuid
+          example: 79c11dc0-6e5c-49fd-b5ae-5c3e09e140fb
+        industryName:
+          type: string
+          example: F&B
+        grantId:
+          type: string
+          format: uuid
+          example: 2a5cc1d3-dbe0-4cbc-b516-9d9502530eb1
+    GrantResponse:
+      required:
+      - applicationProcess
+      - benefits
+      - eligibilityCriteria
+      - grantDesc
+      - grantId
+      - grantLink
+      - grantName
+      - industryId
+      - provider
+      - value
+      properties:
+        grantId:
+          type: string
+          format: uuid
+          example: 62fafab6-7c47-43a9-9308-8b912de4e083
+        grantName:
+          type: string
+          example: Productivity Solutions Grant
+        provider:
+          type: string
+          example: gobusinesssg
+        grantDesc:
+          type: string
+          example: Grant to aid businesses in implementing productive technology
+        value:
+          type: integer
+          example: 30000
+        eligibilityCriteria:
+          type: string
+          example: Singapore run business
+        applicationProcess:
+          type: string
+          example: Buy from approved vendors and apply for grant with receipt
+        benefits:
+          type: string
+          example: Up to 80% of costs reimbursed
+        grantLink:
+          type: string
+          example: https://www.gobusiness.gov.sg/productivity-solutions-grant/
+        industryId:
+          type: array
+          items:
+            type: string
+            format: uuid
+            example: 4090bdc2-ebbe-46ca-b626-bd4dd34a9523
+      example:
+        grantName: Productivity Solutions Grant
+        benefits: Up to 80% of costs reimbursed
+        grantLink: https://www.gobusiness.gov.sg/productivity-solutions-grant/
+        industryId:
+        - 4090bdc2-ebbe-46ca-b626-bd4dd34a9523
+        - 4090bdc2-ebbe-46ca-b626-bd4dd34a9523
+        grantId: 62fafab6-7c47-43a9-9308-8b912de4e083
+        provider: gobusinesssg
+        eligibilityCriteria: Singapore run business
+        value: 30000
+        grantDesc: Grant to aid businesses in implementing productive technology
+        applicationProcess: Buy from approved vendors and apply for grant with receipt
+    NotificationRequest:
+      required:
+      - clientId
+      - isAcknowledged
+      - messageBody
+      properties:
+        messageBody:
+          type: string
+          example: This is an alert
+        isAcknowledged:
+          type: boolean
+          example: false
+        clientId:
+          type: string
+          format: uuid
+          example: dd42ad6c-8a8c-46cc-9022-bb3499989420
+    NotificationResponseA:
+      required:
+      - acknowledged
+      - clientId
+      - createdAt
+      - messageBody
+      - notifId
+      properties:
+        notifId:
+          type: string
+          format: uuid
+          example: d4b5c776-25e1-4f23-bcfe-7fffa55f2ca6
+        messageBody:
+          type: string
+          example: This is an alert
+        createdAt:
+          type: string
+          format: date-time
+          example: 2021-11-15T15:16:05.259Z
+        clientId:
+          type: string
+          format: uuid
+          example: 82a23627-55f2-441a-85e0-5a621f467fff
+        acknowleged:
+          type: boolean
+          example: true
+      example:
+        notifId: d4b5c776-25e1-4f23-bcfe-7fffa55f2ca6
+        createdAt: 2021-11-15T15:16:05.259Z
+        clientId: 82a23627-55f2-441a-85e0-5a621f467fff
+        messageBody: This is an alert
+        acknowleged: true
+    NotificationResponseU:
+      required:
+      - acknowledged
+      - clientId
+      - createdAt
+      - messageBody
+      - notifId
+      properties:
+        notifId:
+          type: string
+          format: uuid
+          example: d4b5c776-25e1-4f23-bcfe-7fffa55f2ca6
+        messageBody:
+          type: string
+          example: This is an alert
+        createdAt:
+          type: string
+          format: date-time
+          example: 2021-11-15T15:16:05.259Z
+        clientId:
+          type: string
+          format: uuid
+          example: 82a23627-55f2-441a-85e0-5a621f467fff
+        acknowleged:
+          type: boolean
+          example: false
+      example:
+        notifId: d4b5c776-25e1-4f23-bcfe-7fffa55f2ca6
+        createdAt: 2021-11-15T15:16:05.259Z
+        clientId: 82a23627-55f2-441a-85e0-5a621f467fff
+        messageBody: This is an alert
+        acknowleged: false
+    inline_response_200:
+      type: object
+      properties:
+        industryExposure:
+          type: integer
+          description: industry exposure risk score of business
+          format: int64
+          example: 2
+        vaccinationRisk:
+          type: integer
+          description: vaccination risk score of business
+          format: int64
+          example: 1
+        covidTestingRisk:
+          type: integer
+          description: covid testing risk score of business
+          format: int64
+          example: 2
+        averageAgeRisk:
+          type: integer
+          description: average age risk score of business
+          format: int64
+          example: 1
+      example:
+        covidTestingRisk: 2
+        industryExposure: 2
+        averageAgeRisk: 1
+        vaccinationRisk: 1
+    ClientResponse_roles:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 2
+        roleName:
+          type: string
+          example: ADMIN
+      example:
+        roleName: ADMIN
+        id: 2
+    ClientResponse_registeredBusinesses:
+      type: object
+      properties:
+        businessId:
+          type: string
+          format: uuid
+          example: 98800244-d07e-41bd-a5f4-b30699db51c5
+        businessName:
+          type: string
+          example: Yeow Leong Chicken Rice
+        businessDesc:
+          type: string
+          example: welcome! let's Chicken rice!
+        industryId:
+          type: string
+          format: uuid
+          example: 31f7b236-71a6-4a1f-b7da-eb94338418b6
+        clientId:
+          type: string
+          format: uuid
+          example: a66c2f2e-a359-488d-ab3b-c1242e74ae21
+      example:
+        industryId: 31f7b236-71a6-4a1f-b7da-eb94338418b6
+        clientId: a66c2f2e-a359-488d-ab3b-c1242e74ae21
+        businessId: 98800244-d07e-41bd-a5f4-b30699db51c5
+        businessName: Yeow Leong Chicken Rice
+        businessDesc: welcome! let's Chicken rice!
